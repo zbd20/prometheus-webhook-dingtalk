@@ -81,7 +81,7 @@ func main() {
 
 	dingTalkResource := &webrouter.DingTalkResource{
 		Logger:   logger,
-		Profiles: cfg.Profilesconfi,
+		Profiles: cfg.Profiles,
 		HttpClient: &http.Client{
 			Timeout: *requestTimeout,
 			Transport: &http.Transport{
