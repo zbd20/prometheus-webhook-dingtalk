@@ -14,14 +14,15 @@ import (
 	"github.com/prometheus/common/promlog/flag"
 	"github.com/prometheus/common/version"
 	"github.com/timonwong/prometheus-webhook-dingtalk/chilog"
+	"github.com/timonwong/prometheus-webhook-dingtalk/config"
 	"github.com/timonwong/prometheus-webhook-dingtalk/template"
 	"github.com/timonwong/prometheus-webhook-dingtalk/webrouter"
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
 var (
+	configFile       = kingpin.Flag("config.file", "prometheus-webhook-dingtalk configuration file name.").Default("dingtalk.yml").String()
 	listenAddress    = kingpin.Flag("web.listen-address", "The address to listen on for web interface.").Default(":8060").String()
-	dingTalkProfiles = DingTalkProfiles(kingpin.Flag("ding.profile", "Custom DingTalk profile (can be given multiple times, <profile>=<dingtalk-url>).").Required())
 	requestTimeout   = kingpin.Flag("ding.timeout", "Timeout for invoking DingTalk webhook.").Default("5s").Duration()
 	templateFileName = kingpin.Flag("template.file", "Customized template file (see template/default.tmpl for example)").Default("").String()
 )
@@ -58,8 +59,14 @@ func main() {
 	}
 
 	// Print current profile configuration
-	profiles := map[string]string(*dingTalkProfiles)
-	level.Info(logger).Log("msg", fmt.Sprintf("Using following dingtalk profiles: %v", profiles))
+	level.Info(logger).Log("msg", "Loading configuration file", "file", *configFile)
+	cfg, err := config.LoadFile(*configFile)
+	if err != nil {
+		level.Error(logger).Log("msg", "Error reading customizable config file", "err", err)
+		os.Exit(1)
+	}
+
+	level.Info(logger).Log("msg", fmt.Sprintf("Using following dingtalk profiles: %v", cfg.Profiles))
 
 	r := chi.NewRouter()
 	r.Use(middleware.CloseNotify)
@@ -74,7 +81,7 @@ func main() {
 
 	dingTalkResource := &webrouter.DingTalkResource{
 		Logger:   logger,
-		Profiles: profiles,
+		Profiles: cfg.Profilesconfi,
 		HttpClient: &http.Client{
 			Timeout: *requestTimeout,
 			Transport: &http.Transport{
