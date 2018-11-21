@@ -4,10 +4,7 @@
 [[projects]]
   branch = "master"
   name = "github.com/alecthomas/template"
-  packages = [
-    ".",
-    "parse"
-  ]
+  packages = [".","parse"]
   revision = "a0175ee3bccc567396460bf5acd36800cb10c49c"
 
 [[projects]]
@@ -24,19 +21,13 @@
 
 [[projects]]
   name = "github.com/go-chi/chi"
-  packages = [
-    ".",
-    "middleware"
-  ]
+  packages = [".","middleware"]
   revision = "f7c66f685bcab06bcce78ac212c5f3553c063d19"
   version = "v3.3.0"
 
 [[projects]]
   name = "github.com/go-kit/kit"
-  packages = [
-    "log",
-    "log/level"
-  ]
+  packages = ["log","log/level"]
   revision = "4dc7be5d2d12881735283bcab7352178e190fc71"
   version = "v0.6.0"
 
@@ -91,23 +82,13 @@
 [[projects]]
   branch = "master"
   name = "github.com/prometheus/common"
-  packages = [
-    "expfmt",
-    "internal/bitbucket.org/ww/goautoneg",
-    "model",
-    "promlog",
-    "promlog/flag",
-    "version"
-  ]
+  packages = ["expfmt","internal/bitbucket.org/ww/goautoneg","model","promlog","promlog/flag","version"]
   revision = "89604d197083d4781071d3c65855d24ecfb0a563"
 
 [[projects]]
   branch = "master"
   name = "github.com/prometheus/procfs"
-  packages = [
-    ".",
-    "xfs"
-  ]
+  packages = [".","xfs"]
   revision = "e645f4e5aaa8506fc71d6edbc5c4ff02c04c46f2"
 
 [[projects]]
@@ -116,9 +97,15 @@
   revision = "1087e65c9441605df944fb12c33f0fe7072d18ca"
   version = "v2.2.5"
 
+[[projects]]
+  name = "gopkg.in/yaml.v2"
+  packages = ["."]
+  revision = "5420a8b6744d3b0345ab293f6fcba19c978f1183"
+  version = "v2.2.1"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ef32b6980efa152fe24b14b20b9568c72f8832b53265fdf1714b2fdd7e620e10"
+  inputs-digest = "6b17786ce2cf44a5ee947533627825dea248df0355f37b46c55f517c06caf7d4"
   solver-name = "gps-cdcl"
   solver-version = 1
