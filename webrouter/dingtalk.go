@@ -4,18 +4,22 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"sync"
 
 	"github.com/go-chi/chi"
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
-	"github.com/timonwong/prometheus-webhook-dingtalk/models"
-	"github.com/timonwong/prometheus-webhook-dingtalk/notifier"
+
+	"github.com/zbd20/prometheus-webhook-dingtalk/config"
+	"github.com/zbd20/prometheus-webhook-dingtalk/models"
+	"github.com/zbd20/prometheus-webhook-dingtalk/notifier"
 )
 
 type DingTalkResource struct {
 	Logger     log.Logger
 	Profiles   map[string]string
 	HttpClient *http.Client
+	RwLock     sync.RWMutex
 }
 
 func (rs *DingTalkResource) Routes() chi.Router {
@@ -23,6 +27,12 @@ func (rs *DingTalkResource) Routes() chi.Router {
 
 	r.Post("/{profile}/send", rs.SendNotification)
 	return r
+}
+
+func (rs *DingTalkResource) Reload(cfg *config.Config) {
+	rs.RwLock.Lock()
+	defer rs.RwLock.Unlock()
+	rs.Profiles = cfg.Profiles
 }
 
 func (rs *DingTalkResource) SendNotification(w http.ResponseWriter, r *http.Request) {
