@@ -7,8 +7,8 @@ import (
 	"net/http"
 
 	"github.com/pkg/errors"
-	"github.com/timonwong/prometheus-webhook-dingtalk/models"
-	"github.com/timonwong/prometheus-webhook-dingtalk/template"
+	"github.com/zbd20/prometheus-webhook-dingtalk/template"
+	"github.com/zbd20github.com/zbd20/prometheus-webhook-dingtalk/models"
 )
 
 func BuildDingTalkNotification(promMessage *models.WebhookMessage) (*models.DingTalkNotification, error) {
