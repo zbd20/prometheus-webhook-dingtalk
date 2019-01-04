@@ -6,7 +6,7 @@ import (
 	"sync"
 	"text/template"
 
-	"github.com/timonwong/prometheus-webhook-dingtalk/template/internal/deftmpl"
+	"github.com/zbd20/prometheus-webhook-dingtalk/template/internal/deftmpl"
 )
 
 var (
