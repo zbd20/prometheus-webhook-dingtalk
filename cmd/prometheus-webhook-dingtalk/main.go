@@ -13,11 +13,12 @@ import (
 	"github.com/prometheus/common/promlog"
 	"github.com/prometheus/common/promlog/flag"
 	"github.com/prometheus/common/version"
-	"github.com/timonwong/prometheus-webhook-dingtalk/chilog"
-	"github.com/timonwong/prometheus-webhook-dingtalk/config"
-	"github.com/timonwong/prometheus-webhook-dingtalk/template"
-	"github.com/timonwong/prometheus-webhook-dingtalk/webrouter"
 	"gopkg.in/alecthomas/kingpin.v2"
+
+	"github.com/zbd20/prometheus-webhook-dingtalk/chilog"
+	"github.com/zbd20/prometheus-webhook-dingtalk/config"
+	"github.com/zbd20/prometheus-webhook-dingtalk/template"
+	"github.com/zbd20/prometheus-webhook-dingtalk/webrouter"
 )
 
 var (
@@ -74,11 +75,6 @@ func main() {
 	r.Use(middleware.RequestLogger(&chilog.KitLogger{Logger: logger}))
 	r.Use(middleware.Recoverer)
 
-	// add heath check api
-	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("ok"))
-	})
-
 	dingTalkResource := &webrouter.DingTalkResource{
 		Logger:   logger,
 		Profiles: cfg.Profiles,
@@ -90,6 +86,27 @@ func main() {
 			},
 		},
 	}
+
+	// add health check api
+	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("ok"))
+	})
+
+	// add reload config file api
+	r.Get("/reload", func(w http.ResponseWriter, r *http.Request) {
+		level.Info(logger).Log("msg", "Loading configuration file", "file", *configFile)
+		cfg, err := config.LoadFile(*configFile)
+		if err != nil {
+			level.Error(logger).Log("msg", "Error reading customizable config file", "err", err)
+			w.Write([]byte("failed"))
+			return
+		}
+
+		dingTalkResource.Reload(cfg)
+
+		w.Write([]byte("ok"))
+	})
+
 	r.Mount("/dingtalk", dingTalkResource.Routes())
 
 	level.Info(logger).Log("msg", "Listening on address", "address", *listenAddress)
